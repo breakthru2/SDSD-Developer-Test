@@ -1,0 +1,29 @@
+﻿@model UploadViewModel 
+@{
+    ViewData["Title"] = "Add Upload";
+}
+
+    <div class="row">
+        <div class="col-md-6">
+            <h1>Add Document</h1>
+            <form asp-action="AddUpload" asp-controller="Home" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="col-form-label" asp-for="Name"></label>
+                    <input type="text" class="form-control" asp-for="Name">
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label class="col-form-label" asp-for="Email"></label>
+                    <input type="text" class="form-control" asp-for="Email">
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FormFiles"></label>
+                    <input type="file" multiple class="form-control-file" asp-for="FormFiles">
+                    <span asp-validation-for="FormFiles" class="text-danger"></span>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Upload</button>
+            </form>
+        </div>
+    </div>
+
