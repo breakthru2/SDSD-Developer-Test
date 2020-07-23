@@ -1,0 +1,80 @@
+In C#, there are three concepts for representing a bag of objects. In order of increasing features, they are:
+
+Enumerable - unordered, unmodifiable
+Collection - can add/remove items
+List - allows items to have an order (accessing and removing by index)
+Enumerable has no order. You cannot add or remove items from the set. You cannot even get a count of items in the set. It strictly lets you access each item in the set, one after the other.
+
+Collection is a modifiable set. You can add and remove objects from the set, you can also get the count of items in the set. But there still is no order, and because there is no order: no way to access an item by index, nor is there any way to sort.
+
+List is an ordered set of objects. You can sort the list, access items by index, remove items by index.
+
+In fact, when looking at the interfaces for these, they build on one another:
+
+interface IEnumerable<T>
+
+GetEnumeration<T>
+interface ICollection<T> : IEnumerable<T>
+
+Add
+Remove
+Clear
+Count
+interface IList<T> = ICollection<T>
+
+Insert
+IndexOf
+RemoveAt
+When declaring variables, or method parameters, you should choose to use
+
+IEnumerable
+ICollection
+IList
+based on conceptually you need to do with the set of objects.
+
+If you just need to be able to do something to every object in a list, then you only need IEnumerable:
+
+void SaveEveryUser(IEnumerable<User> users)
+{
+    for User u in users
+      ...
+}
+You don't care if the Users are kept in a List<T>, Collection<T>, Array<T> or anything else. You only need the IEnumerable<T> interface.
+
+If you need to be able to add, remove, or count the items in a set, then use a Collection:
+
+ICollection<User> users = new Collection<User>();
+users.Add(new User());
+If you care about a sort order, and need the order to be correct, then use a List:
+
+IList<User> users = FetchUsers(db);
+In chart form:
+
+| Feature                | IEnumerable<T> | ICollection<T> | IList<T> |
+|------------------------|----------------|----------------|----------|
+| Enumerating items      | X              | X              | X        |
+|                        |                |                |          |
+| Adding items           |                | X              | X        |
+| Removing items         |                | X              | X        |
+| Count of items         |                | X              | X        |
+|                        |                |                |          |
+| Accessing by index     |                |                | X        |
+| Removing by indexx     |                |                | X        |
+| Getting index of item  |                |                | X        |
+The List<T> and Collection<T> in System.Collections.Generic are two classes that implement these interfaces; but they aren't the only classes:
+
+ConcurrentBag<T> is an ordered bag of objects (IEnumerable<T>)
+LinkedList<T> is a bag where you are not allowed to access items by index (ICollection); but you can arbitrarily add and remove items from the collection
+SynchronizedCollection<T> in an ordered collection, where you can add/remove items by index
+So you can easily change:
+
+IEnumerable<User> users = new SynchronizedCollection<User>();
+
+SaveEveryUser(users);
+tl;dr
+Enumerable - access items, unordered, unmodifiable
+Collection - can be modified (add,delete,count)
+List - can access by index
+Choose the concept you need, then use the matching class.
+
+share  edit  follow 

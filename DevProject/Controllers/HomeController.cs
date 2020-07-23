@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Hosting;
 using System.IO;
 using System.Net.Mail;
 using System.Net;
+using Microsoft.AspNetCore.Http;
 
 namespace DevProject.Controllers
 {
@@ -90,14 +91,34 @@ namespace DevProject.Controllers
                 newMail.Subject = "SDSD Developer Test";
                 newMail.Body = "Hello " + model.Name + ", these are your attachments";
 
-                foreach (var filepath in files)
+
+                foreach (IFormFile filepath in files)
                 {
-                    string fileName = filepath.FileName;
-                    //string fileNames = fileName;
-                    newMail.Attachments.Add(new Attachment(filepath.OpenReadStream(), fileName));
+                    string fileName = Path.GetFileName(filepath.FileName);
+
+                    newMail.Attachments.Add(new Attachment(filepath.OpenReadStream(), Path.GetExtension(filepath.FileName)));
+
+                    //var attachment = new Attachment(filepath);
+                    //newMail.Attachments.Add(attachment);
                 }
-                SendEmail(newMail);
-                
+                newMail.IsBodyHtml = false;
+                SmtpClient client = new SmtpClient
+                {
+                    Host = "smtp.gmail.com"
+                };
+                NetworkCredential credential = new NetworkCredential
+                {
+                    UserName = "paulbreakthru@gmail.com",
+                    Password = "@Breakthru2"
+                };
+                client.Credentials = credential;
+                client.EnableSsl = true;
+                client.UseDefaultCredentials = false;
+                client.Port = 465;
+                client.Send(newMail);
+
+                ViewBag.Success = $"Email has been sent successfully to {model.Email}";
+
 
                 if (await _upload.SaveChangesAsync())
                 {
@@ -116,12 +137,12 @@ namespace DevProject.Controllers
         {
             SmtpClient client = new SmtpClient();
             client.Host = "smtp.gmail.com";     // These are the host connection properties  
-            client.Port = 587;
+            client.Port = 465;
             client.EnableSsl = true;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
             // here you need to declare the credentials of the sender 
-            client.Credentials = new System.Net.NetworkCredential("aptechweb2019@gmail.com", "aptech2019@");   
+            client.Credentials = new System.Net.NetworkCredential("paulbreakthrough@gmail.com", "@Breakthru2");   
              
             try
             {

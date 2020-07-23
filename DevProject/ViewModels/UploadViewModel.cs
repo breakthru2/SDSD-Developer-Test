@@ -22,6 +22,6 @@ namespace DevProject.ViewModels
 
         [Required]
         [Display(Name = "Upload Documents")]
-        public IFormFileCollection FormFiles { get; set; }
+        public List<IFormFile> FormFiles { get; set; }
     }
 }
