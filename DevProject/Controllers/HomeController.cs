@@ -31,7 +31,28 @@ namespace DevProject.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var vm = new IndexViewModel()
+            {
+                UploadNames = _upload.GetUploadDocs()
+            };
+            return View(vm);
+        }
+
+        [HttpPost]
+        public IActionResult Index(IndexViewModel vm)
+        {
+            if (ModelState.IsValid)
+            {
+                string webrootPath = _hostEnvironment.WebRootPath;
+                var result = new IndexViewModel
+                {
+                    Files = _upload.GetUploadFiles(vm.Email, vm.TransNumber),
+                    href =  webrootPath,
+                    UploadNames = _upload.GetUploadDocs()
+                };
+                return View(result);
+            }
+            return View(vm);
         }
 
         public IActionResult AddUpload()
@@ -84,40 +105,44 @@ namespace DevProject.Controllers
                 _upload.AddUploadFile(uploadFile);
                 }
 
-                MailMessage newMail = new MailMessage();
-                newMail.From = new MailAddress("paulbreakthrough@gmail.com");
-                newMail.To.Add(new MailAddress(model.Email));
+                #region Mail
 
-                newMail.Subject = "SDSD Developer Test";
-                newMail.Body = "Hello " + model.Name + ", these are your attachments";
+                MailMessage msg = new MailMessage  // instance Mail sender service
+                {
+                    From = new MailAddress("paulbreakthru@gmail.com"),  // Server Email Address
+                };
+                msg.To.Add(model.Email); // receiver Email
+
+                msg.Subject = "SDSD Developer Test";
+                msg.Body = "Hello " + model.Name + ", these are your attachments";  // Message Body
 
 
-                foreach (IFormFile filepath in files)
+                foreach (var filepath in files)
                 {
                     string fileName = Path.GetFileName(filepath.FileName);
 
-                    newMail.Attachments.Add(new Attachment(filepath.OpenReadStream(), Path.GetExtension(filepath.FileName)));
-
-                    //var attachment = new Attachment(filepath);
-                    //newMail.Attachments.Add(attachment);
+                    msg.Attachments.Add(new Attachment(filepath.OpenReadStream(), fileName));
                 }
-                newMail.IsBodyHtml = false;
+
                 SmtpClient client = new SmtpClient
                 {
                     Host = "smtp.gmail.com"
                 };
                 NetworkCredential credential = new NetworkCredential
-                {
-                    UserName = "paulbreakthru@gmail.com",
-                    Password = "@Breakthru2"
+                {  // Server Email credentisal
+                    UserName = "paulbreakthrusmtp@gmail.com",
+                    Password = "@Alpha1234"
                 };
                 client.Credentials = credential;
                 client.EnableSsl = true;
-                client.UseDefaultCredentials = false;
-                client.Port = 465;
-                client.Send(newMail);
+                client.Port = 587;
+                client.Send(msg);
+
 
                 ViewBag.Success = $"Email has been sent successfully to {model.Email}";
+                _logger.LogInformation("User created ");
+
+                #endregion
 
 
                 if (await _upload.SaveChangesAsync())

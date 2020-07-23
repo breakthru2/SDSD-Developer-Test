@@ -22,6 +22,8 @@ namespace DevProject.Services
 
         void AddUploadFile(UploadImage upload);
 
+        List<UploadImage> GetUploadFiles(string email, string transNumber);
+
 
     }
 }

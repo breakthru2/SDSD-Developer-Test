@@ -1,5 +1,6 @@
 ﻿using DevProject.Data;
 using DevProject.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,11 @@ namespace DevProject.Services
         public List<UploadDoc> GetUploadDocs()
         {
             return _db.UploadDocs.ToList();
+        }
+
+        public List<UploadImage> GetUploadFiles(string email, string transNumber)
+        {
+            return _db.UploadImages.Include(u => u.Upload).Where(e => e.Upload.Email == email && e.Upload.TransNumber == transNumber).ToList();
         }
 
         public void RemoveUploadDoc(Guid Id)

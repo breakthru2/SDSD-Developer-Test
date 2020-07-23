@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IndexViewModel
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -7,8 +8,77 @@
             <h1 class="jumbotron-heading">SDSD Developer Test</h1>
             <p class="lead text-muted">Upload Documents, Email the documents and Display in a Grid to open or View</p>
             <p>
-                <a asp-action="AddUpload" asp-controller="Home" class="btn btn-primary my-2">Upload a New Document</a>
+                <a asp-action="AddUpload" asp-controller="Home" class="btn btn-primary my-2">Create New Test</a>
                @* <a href="#" class="btn btn-secondary my-2">Secondary action</a>*@
             </p>
         </div>
     </section>
+
+    <div class="alert alert-dismissible alert-warning">
+        <strong>Hello there!</strong> Use this section to find upload files by inputting email and transaction number.
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <table class="table table-hover table-bordered">
+                <thead class="bg-primary text-light">
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Transaction Id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{ var i = 1;}
+                    @foreach (var upload in Model.UploadNames)
+                    {
+                        <tr>
+                            <td>@i</td>
+                            <td>@upload.Name</td>
+                            <td>@upload.Email</td>
+                            <td>@upload.TransNumber</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-12 mx-auto">
+                    <form asp-action="Index" asp-controller="Home" method="post">
+                        <div class="form-group">
+                            <label class="col-form-label" asp-for="Email"></label>
+                            <input type="text" class="form-control" asp-for="Email">
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-form-label" asp-for="TransNumber"></label>
+                            <input type="text" class="form-control" asp-for="TransNumber">
+                            <span asp-validation-for="TransNumber" class="text-danger"></span>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">View Uploads</button>
+                    </form>
+                </div>
+            </div>
+
+            @if (!(Model.Files == null))
+            {
+                <br /><br />
+                <div class="row">
+                    <div class="col-md-12 mx-auto">
+                        <div class="row">
+                            @foreach (var item in Model.Files)
+                            {
+                                var txt = item.ImagePath;
+                                <div class="col-md-4">
+                                    <a href="@txt" target="_blank">@item.ImagePath.Remove(0, 8)</a>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
