@@ -65,12 +65,10 @@ namespace DevProject.Controllers
         {
             if (ModelState.IsValid)
             {
-                DateTime now = DateTime.Now;
-                string dd = now.ToString("dd");
-                string mm = now.ToString("MM");
-                string yy = now.ToString("yyyy");
+               
+                string unique = Guid.NewGuid().ToString();
 
-                string UniqueTransId = "Upload-" + dd + mm + yy;             
+                string UniqueTransId = "Upload-" + unique;             
 
                 var upload = new UploadDoc
                 {
@@ -147,7 +145,7 @@ namespace DevProject.Controllers
 
                 if (await _upload.SaveChangesAsync())
                 {
-                    return View(nameof(Index));
+                    return RedirectToAction(nameof(Index));
                 }
 
                 return View(model);
@@ -158,27 +156,7 @@ namespace DevProject.Controllers
         }
 
 
-        public static void SendEmail(MailMessage message)
-        {
-            SmtpClient client = new SmtpClient();
-            client.Host = "smtp.gmail.com";     // These are the host connection properties  
-            client.Port = 465;
-            client.EnableSsl = true;
-            client.DeliveryMethod = SmtpDeliveryMethod.Network;
-
-            // here you need to declare the credentials of the sender 
-            client.Credentials = new System.Net.NetworkCredential("paulbreakthrough@gmail.com", "@Breakthru2");   
-             
-            try
-            {
-                client.Send(message);      // And finally this is the line which executes our process and sends mail             
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
+       
         public IActionResult Privacy()
         {
             return View();

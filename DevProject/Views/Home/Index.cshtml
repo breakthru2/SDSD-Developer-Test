@@ -9,7 +9,7 @@
             <p class="lead text-muted">Upload Documents, Email the documents and Display in a Grid to open or View</p>
             <p>
                 <a asp-action="AddUpload" asp-controller="Home" class="btn btn-primary my-2">Create New Test</a>
-               @* <a href="#" class="btn btn-secondary my-2">Secondary action</a>*@
+              
             </p>
         </div>
     </section>
@@ -39,6 +39,7 @@
                             <td>@upload.Email</td>
                             <td>@upload.TransNumber</td>
                         </tr>
+                        i++;
                     }
                 </tbody>
             </table>
@@ -65,15 +66,36 @@
             @if (!(Model.Files == null))
             {
                 <br /><br />
-                <div class="row">
+                <div class="row alert alert-dismissible alert-warning">
                     <div class="col-md-12 mx-auto">
                         <div class="row">
                             @foreach (var item in Model.Files)
                             {
-                                var txt = item.ImagePath;
-                                <div class="col-md-4">
-                                    <a href="@txt" target="_blank">@item.ImagePath.Remove(0, 8)</a>
-                                </div>
+                                if (item.ImagePath.Contains(".jpg"))
+                                {
+                                    var txt = item.ImagePath;
+                                    <div class="col-md-4">
+                                        <div>
+                                            <a href="@txt" target="_blank" class="text-light" id="myText"><img src="@txt" alt="@txt" class="img-thumbnail"></a>
+                                        </div>
+                                        <div>
+                                            <a href="@txt" target="_blank" class="text-light" id="myText">@item.ImagePath.Remove(0, 8)</a>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    var txt = item.ImagePath;
+                                    <div class="col-md-4">
+                                        <div>
+                                            <a href="@txt" target="_blank" class="text-light" id="myText"><img src="~/images/maindoc/doc.png" alt="@txt" class="img-thumbnail"></a>
+                                        </div>
+                                        <div>
+                                            <a href="@txt" target="_blank" class="text-light" id="myText">@item.ImagePath.Remove(0, 8)</a>
+                                        </div>
+                                    </div>
+                                }
+
                             }
 
                         </div>
