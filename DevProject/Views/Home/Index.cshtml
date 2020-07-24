@@ -71,7 +71,7 @@
                         <div class="row">
                             @foreach (var item in Model.Files)
                             {
-                                if (item.ImagePath.Contains(".jpg"))
+                                if (item.ImagePath.Contains(".jpg") || item.ImagePath.Contains(".png"))
                                 {
                                     var txt = item.ImagePath;
                                     <div class="col-md-4">

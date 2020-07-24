@@ -10,7 +10,7 @@ namespace DevProject.ViewModels
 {
     public class IndexViewModel
     {
-        [Requiredo]
+        [Required]
         [Display(Prompt = "Enter Email")]
         public string Email { get; set; }
 
